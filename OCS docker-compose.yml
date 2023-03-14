@@ -1,0 +1,47 @@
+version: "3"
+
+services:
+#Mysql Container
+  mysql:
+    image: mysql:5.7.23
+    container_name: mysqlocs
+    hostname: mysqlocs
+    environment:
+      - MYSQL_ROOT_PASSWORD=password123
+      - MYSQL_DATABASE=OCS_db
+      - MYSQL_USER=ocsdb
+      - MYSQL_PASSWORD=password123
+      - explicit_defaults_for_timestamp=1
+    volumes:
+      - ./data:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d/
+#ocsinventory Container
+  ocsinventory:
+    image: ocsinventory/ocsinventory-docker-image
+    container_name : ocsinventory
+    hostname: ocsinventory
+    environment:
+      - OCS_DBSERVER_READ=localhost
+      - OCS_DBSERVER_WRITE=localhost
+      - OCS_DBNAME=ocsdb
+      - OCS_DBUSER=ocsdb
+      - OCS_DBPASS=password123
+    ports:
+      - "8001:80"
+    volumes:
+      - ./ocsdownload:/usr/share/ocsinventory-reports/ocsreports/download/
+      - ./ocssrv:/etc/ocsinventory-reports/
+      - ./ocslib:/var/lib/ocsinventory-reports/
+    links:
+      - mysqlocs
+#PhpMyAdmin Container
+ # phpmyadmin:
+  #  image: phpmyadmin/phpmyadmin
+   # ports:
+    #  - "8080:80"
+    #environment:
+    #  PMA_HOST: mysqlocs
+    #  PMA_PORT: 3306
+    #  MYSQL_USER: phpmyadmin
+    #  MYSQL_PASSWORD: password123
+    #  MYSQL_ROOT_PASSWORD: password123
