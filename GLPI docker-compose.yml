@@ -1,0 +1,38 @@
+version: "3.2"
+
+services:
+#Mysql Container
+  mysql:
+    image: mysql:5.7.23
+    container_name: mysql
+    hostname: mysql
+    environment:
+      - TZ=Asia/Kolkata
+      - MYSQL_ROOT_PASSWORD=password123
+      - MYSQL_DATABASE=glpi_db
+      - MYSQL_USER=glpidb
+      - MYSQL_PASSWORD=password123
+    volumes:
+      - ./data:/var/lib/mysql
+      - ./config:/var/www/config
+#GLPI Container
+  glpi:
+    image: diouxx/glpi
+    container_name : glpi
+    hostname: glpi
+    ports:
+      - "8010:80"
+    volumes:
+      - ./plugins:/var/www/html/glpi/plugins
+#PhpMyAdmin Container
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      MYSQL_USER: phpmyadmin
+      MYSQL_PASSWORD: password123
+      MYSQL_ROOT_PASSWORD: password123
+
